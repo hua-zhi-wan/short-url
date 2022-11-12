@@ -28,15 +28,13 @@ function createCallback() {
     });
 }
 
-document.querySelector('#output').value = window.location + 'short';
-document.querySelector('#create-disabled').style.display = 'none';
+window.onload = () => {
+    document.querySelector('#output').value = window.location + 'short';
+    document.querySelector('#create-disabled').style.display = 'none';
 
-const clipboard = new ClipboardJS('#copy');
-clipboard.on('success', function (e) {
-    //console.log('SUCCESS', e.text, e.trigger);
-    toast('Copied.', 'bg-info')
-    e.clearSelection();
-});
-clipboard.on('error', function (e) {
-    //console.log('FAILED', e.trigger);
-});
+    const clipboard = new ClipboardJS('#copy');
+    clipboard.on('success', function (e) {
+        toast('Copied.', 'bg-info')
+        e.clearSelection();
+    });
+}
