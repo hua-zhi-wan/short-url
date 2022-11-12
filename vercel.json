@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+        {
+            "source": "/:slug((?!api/).{4,10})",
+            "destination": "/api/jump?slug=:slug*"
+        }
+    ]
+}
