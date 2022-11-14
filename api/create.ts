@@ -2,6 +2,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { nanoid } from 'nanoid';
 
 import { dbclient } from './dbclient';
+import { Timestamp } from 'mongodb';
 
 module.exports = async (request: VercelRequest, response: VercelResponse) => {
     const { url, slug } = request.body;

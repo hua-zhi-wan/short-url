@@ -1,40 +1,45 @@
-function toast(msg, color) {
-    const toast = document.querySelector('#toast');
-    toast.classList.remove('bg-primary', 'bg-danger');
-    toast.classList.add(color);
-    document.querySelector('.toast-body').innerText = msg;
-    new bootstrap.Toast(toast).show();
-}
-
-function createCallback() {
-    const url = document.querySelector('#url').value;
-    const slug = document.querySelector('#slug').value;
-    const originStatus = document.querySelector('#create').style.display;
-
-    document.querySelector('#create').style.display = 'none';
-    document.querySelector('#create-disabled').style.display = originStatus;
-    axios({
-        method: 'post',
-        url: '/api/create',
-        data: { url, slug },
-    }).then((resp) => {
-        toast(resp.data.msg ?? 'ok', 'bg-success');
-        document.querySelector('#output').value = window.location.origin + '/' + resp.data.slug;
-    }).catch((err) => {
-        toast(err.response.data.msg ?? 'err', 'bg-danger');
-    }).finally(() => {
-        document.querySelector('#create-disabled').style.display = 'none';
-        document.querySelector('#create').style.display = originStatus;
-    });
-}
-
-window.onload = () => {
-    document.querySelector('#output').value = window.location + 'short';
-    document.querySelector('#create-disabled').style.display = 'none';
-
-    const clipboard = new ClipboardJS('#copy');
-    clipboard.on('success', function (e) {
-        toast('Copied.', 'bg-info')
-        e.clearSelection();
-    });
-}
+PetiteVue.createApp({
+    count: 0,
+    toastData: PetiteVue.reactive({
+        msg: ''
+    }),
+    data: PetiteVue.reactive({
+        url: '',
+        slug: '',
+        output: window.location.origin + '/short',
+        display: true
+    }),
+    toast(msg, color) {
+        const toast = document.querySelector('#toast');
+        this.toastData.msg = msg;
+        toast.classList.remove('bg-primary', 'bg-danger');
+        toast.classList.add(color);
+        new bootstrap.Toast(toast).show();
+    },
+    createCallback() {
+        this.data.display = false;
+        const data = {
+            url: this.data.url,
+            slug: this.data.slug,
+        }
+        axios({
+            method: 'post',
+            url: '/api/create',
+            data: data
+        }).then((resp) => {
+            this.toast(resp.data.msg ?? 'ok', 'bg-success');
+            this.data.output = window.location.origin + '/' + resp.data.slug;
+        }).catch((err) => {
+            this.toast(err.response.data.msg ?? 'err', 'bg-danger');
+        }).finally(() => {
+            this.data.display = true;
+        });
+    },
+    mounted() {
+        const clipboard = new ClipboardJS('#copy');
+        clipboard.on('success', (e) => {
+            this.toast('Copied.', 'bg-info');
+            e.clearSelection();
+        });
+    }
+}).mount('#app');
