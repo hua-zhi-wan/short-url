@@ -16,13 +16,13 @@
             <div class="row mb-3">
                 <label class="col-2" for="url">Origin URL</label>
                 <div class="col-10">
-                    <input class="form-control" type="text" placeholder="https://..." id="url" :value="data.url">
+                    <input class="form-control" type="text" placeholder="https://..." id="url" v-model:value="data.url">
                 </div>
             </div>
             <div class="row mb-3">
                 <label class="col-2" for="slug">Slug</label>
                 <div class="col-10">
-                    <input class="form-control" type="text" placeholder="/[A-Za-z0-9\-]{4,10}/, optional" id="slug" :value="data.slug">
+                    <input class="form-control" type="text" placeholder="/[A-Za-z0-9\-]{4,10}/, optional" id="slug" v-model:value="data.slug">
                 </div>
             </div>
             <div class="row mb-5">
