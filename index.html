@@ -22,15 +22,16 @@
             <div class="row mb-3">
                 <label class="col-2" for="slug">Slug</label>
                 <div class="col-10">
-                    <input class="form-control" type="text" placeholder="/[A-Za-z0-9\-]{4,10}/, optional" id="slug" v-model:value="data.slug">
+                    <input class="form-control" type="text" placeholder="/[A-Za-z0-9\-]{4,10}/, optional" id="slug"
+                        v-model:value="data.slug">
                 </div>
             </div>
             <div class="row mb-5">
                 <div class="offset-2 col-10">
                     <input type="button" class="btn btn-outline-primary" @click="createCallback()" value="Create"
-                        id="create" v-if="data.display"/>
+                        id="create" v-if="data.display" />
                     <input type="button" class="btn btn-outline-primary" value="Creating..." id="create-disabled"
-                        disabled v-else/>
+                        disabled v-else />
                 </div>
             </div>
 
@@ -48,8 +49,8 @@
         </form>
     </div>
     <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
-        <div class="toast align-items-center text-white" role="alert" aria-live="assertive"
-            aria-atomic="true" id="toast">
+        <div class="toast align-items-center text-white" role="alert" aria-live="assertive" aria-atomic="true"
+            id="toast">
             <div class="d-flex">
                 <div class="toast-body">{{toastData.msg}}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
@@ -63,7 +64,54 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.iife.min.js"></script>
-    <script src="./index.js"></script>
+    <script>
+        const bg = ['primary', 'danger', 'success', 'info'].map(i => 'bg-' + i);
+        PetiteVue.createApp({
+            count: 0,
+            toastData: PetiteVue.reactive({
+                msg: ''
+            }),
+            data: PetiteVue.reactive({
+                url: '',
+                slug: '',
+                output: window.location.origin + '/short',
+                display: true
+            }),
+            toast(msg, color) {
+                const toast = document.querySelector('#toast');
+                this.toastData.msg = msg;
+                toast.classList.remove(...bg);
+                toast.classList.add(color);
+                new bootstrap.Toast(toast).show();
+            },
+            createCallback() {
+                this.data.display = false;
+                const data = {
+                    url: this.data.url,
+                    slug: this.data.slug,
+                }
+                axios({
+                    method: 'post',
+                    url: '/api/create',
+                    data: data
+                }).then((resp) => {
+                    this.toast(resp.data.msg ?? 'ok', bg[2]);
+                    this.data.output = window.location.origin + '/' + resp.data.slug;
+                }).catch((err) => {
+                    this.toast(err.response.data.msg ?? 'err', bg[1]);
+                }).finally(() => {
+                    this.data.display = true;
+                });
+            },
+            mounted() {
+                const clipboard = new ClipboardJS('#copy');
+                clipboard.on('success', (e) => {
+                    this.toast('Copied.', bg[3]);
+                    e.clearSelection();
+                });
+            }
+        }).mount('#app');
+    </script>
 </body>
 
 </html>
