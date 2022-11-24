@@ -5,7 +5,8 @@ import { dbclient } from './dbclient';
 import { Timestamp } from 'mongodb';
 
 module.exports = async (request: VercelRequest, response: VercelResponse) => {
-    const { url, slug } = request.body;
+    let { url, slug } = request.body;
+    url = decodeURI(url);
     const db = dbclient.db('shorturl').collection('links');
 
     if (!/^https?\:\/\//.test(url)) {
