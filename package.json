@@ -10,5 +10,5 @@
     "@types/node-fetch": "^2.6.2",
     "@vercel/node": "^2.6.2"
   },
-  "type": "module"
+  "type": "commonjs"
 }

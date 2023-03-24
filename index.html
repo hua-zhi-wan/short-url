@@ -30,7 +30,7 @@
                 <div class="offset-2 col-10">
                     <input type="button" class="btn btn-outline-primary" @click="createCallback()" value="Create"
                         id="create" v-if="data.display" />
-                    <input type="button" class="btn btn-outline-primary" value="Creating..." id="create-disabled"
+                    <input type="button" class="btn btn-outline-primary" value="..." id="create-disabled"
                         disabled v-else />
                 </div>
             </div>
@@ -44,6 +44,13 @@
             <div class="row mb-3">
                 <div class="offset-2 col-10">
                     <button class="btn btn-outline-secondary" data-clipboard-target="#output" id="copy">Copy</button>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="offset-2 col-10">
+                    <input type="button" class="btn btn-outline-danger" @click="deleteAll()" value="Delete All"
+                        v-if="data.display" />
+                    <input type="button" class="btn btn-outline-danger" value="..." disabled v-else />
                 </div>
             </div>
         </form>
@@ -97,6 +104,19 @@
                 }).then((resp) => {
                     this.toast(resp.data.msg ?? 'ok', bg[2]);
                     this.data.output = window.location.origin + '/' + resp.data.slug;
+                }).catch((err) => {
+                    this.toast(err.response.data.msg ?? 'err', bg[1]);
+                }).finally(() => {
+                    this.data.display = true;
+                });
+            },
+            deleteAll() {
+                this.data.display = false;
+                axios({
+                    method: 'post',
+                    url: '/api/clear'
+                }).then((resp) => {
+                    this.toast(resp.data.msg ?? 'ok', bg[2]);
                 }).catch((err) => {
                     this.toast(err.response.data.msg ?? 'err', bg[1]);
                 }).finally(() => {
