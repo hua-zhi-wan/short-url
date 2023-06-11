@@ -1,6 +1,6 @@
 # ✂️ Short URL
 
-URL shortening service deployed on Vercel: [kaga.ga](kaga.ga)
+URL shortening service deployed on Vercel: [hanayabuki.cf](hanayabuki.cf)
 
 ## 🔍 How to deploy it on [vercel.com](vercel.com)?
 
